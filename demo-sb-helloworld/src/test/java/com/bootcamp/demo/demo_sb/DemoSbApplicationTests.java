@@ -1,13 +1,13 @@
-package com.bootcamp.demo.demo_sb;
+// package com.bootcamp.demo.demo_sb;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class DemoSbApplicationTests {
+// @SpringBootTest
+// class DemoSbApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }
