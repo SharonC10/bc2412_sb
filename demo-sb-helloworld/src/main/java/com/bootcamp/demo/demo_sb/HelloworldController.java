@@ -102,6 +102,7 @@ public class HelloworldController {
  }
  
  
+  //---------------------------------
   // @GetMapping(value = "/shoppingmall")
   // public ShoppingMall getShoppingMall() {
   //   ShoppingMall.Cinema.ReleasedFilms film1 = ReleasedFilms.builder()

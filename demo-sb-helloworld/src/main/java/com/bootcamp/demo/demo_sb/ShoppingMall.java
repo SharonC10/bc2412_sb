@@ -9,5 +9,5 @@ public class ShoppingMall {
   private String name;
   private int area;
   private Cinema cinema;
-  private ShopCategory [] shopCategory;
+  private String [] shopCategory;
 }

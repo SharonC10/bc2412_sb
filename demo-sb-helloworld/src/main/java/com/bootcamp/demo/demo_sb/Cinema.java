@@ -9,9 +9,9 @@ import lombok.Getter;
 public class Cinema {
   private String name;
   private LocalDate openedDate;
-  private ReleasedFilms releasedFilms;
+  private Film [] releasedFilms;
 
-  public Cinema (String name , LocalDate openedDate, ReleasedFilms releasedFilms){
+  public Cinema (String name , LocalDate openedDate, Films [] releasedFilms){
     this.name = name;
     this.openedDate = openedDate;
     this.releasedFilms = releasedFilms;
