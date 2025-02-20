@@ -1,5 +1,6 @@
 package com.bootcamp.bc_forum.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import com.bootcamp.bc_forum.dto.CommentDTO;
+import com.bootcamp.bc_forum.dto.UserDTO;
 import com.bootcamp.bc_forum.model.dto.CommentDto;
+import com.bootcamp.bc_forum.model.dto.UserDto;
 import com.bootcamp.bc_forum.service.CommentService;
 @Service
 public class CommentServiceImpl implements CommentService{
@@ -34,6 +38,9 @@ public class CommentServiceImpl implements CommentService{
     .stream()
     .filter(e -> e.getPostId() == postId)
     .toList();
+
+    
     return filteredCommentDtos;
   }
+ 
 }

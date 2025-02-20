@@ -14,33 +14,44 @@ import com.bootcamp.bc_forum.service.CommentService;
 import com.bootcamp.bc_forum.service.PostService;
 
 @Service
-public class PostServiceImpl implements PostService {
+public class PostServiceImpl implements PostService{
   @Autowired
   private RestTemplate restTemplate;
   @Autowired
   private CommentService commentService;
-
-  @Value("${api.jsonplaceholder.domain}")
+  
+  @Value ("${api.jsonplaceholder.domain}")
   private String domain;
 
-  @Value("${api.jsonplaceholder.endpoints.posts}")
+  @Value ("${api.jsonplaceholder.endpoints.posts}")
   private String postsEndpoint;
 
   @Override
-  public List<UserDTO.Post> getPostDtos(Long userId) {
-    String url = UriComponentsBuilder.newInstance().scheme("https").host(domain)
-        .path(postsEndpoint).build().toUriString();
-    List<PostDto> postDtos =
-        Arrays.asList(this.restTemplate.getForObject(url, PostDto[].class));
+  public List<UserDTO.Post> getPostDtos(Long userId){
+    String url = UriComponentsBuilder.newInstance()
+    .scheme("https")
+    .host(domain)
+    .path(postsEndpoint)
+    .build()
+    .toUriString();
+    List<PostDto> postDtos = 
+    Arrays.asList(this.restTemplate.getForObject(url, PostDto[].class));
 
-    List<UserDTO.Post> postList = new ArrayList<>();
+   List<UserDTO.Post> postList = new ArrayList<>();
 
-    for (PostDto postDto : postDtos) {
-      if (postDto.getUserId() == userId) {
-        postList.add(new UserDTO.Post(postDto.getId(), postDto.getTitle(),
-            postDto.getBody(), commentService.getCommentDtos(postDto.getId())));
-      }
+    for(PostDto postDto : postDtos){
+      if(postDto.getUserId() == userId){
+      postList.add(
+        new UserDTO.Post(
+        postDto.getId(),
+        postDto.getTitle(),
+        postDto.getBody(),
+        commentService.getCommentDtos(postDto.getId())
+        )
+      );
     }
+   } 
     return postList;
+ 
   }
 }
