@@ -1,8 +1,15 @@
 package com.bootcamp.bc_forum.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
   private Long id;
   private String name;
@@ -14,6 +21,9 @@ public class UserDto {
   private Company company;
 
   @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor
   public static class Address {
     private String street;
     private String suite;
@@ -23,14 +33,22 @@ public class UserDto {
 
 
     @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Geo {
-      private Double lat;
-      private Double lng;
+      @JsonProperty(value = "lat")
+      private String latitude;
+      @JsonProperty(value = "lng")
+      private String longitude;
     }
   }
 
 
   @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor
   public static class Company {
     private String name;
     private String catchPhrase;

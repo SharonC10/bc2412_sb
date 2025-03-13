@@ -5,14 +5,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-@SpringBootApplication //@SpringBootConfiguration + @EnableAuto
-//! ComponentScan -> Search the whole project, check if any 
-//! @Controller , @Service, @Repository, @Configuattion , @
-//! @Controller , @Service, @Repository, @Configuattion are a type of Component
+@SpringBootApplication //@SpringBootConfiguration = @Configuration 
+//+ @EnableAutoConfiguration + @ComponentScan
+//! ComponentScan -> Search the whole project, check if any @Controller, @Service, @Repository,
+//! @Configuration, @Component .
+
+//! @Controller, @Service, @Repository, @Configuration are a type of Component
 
 public class DemoSbRestfulApplication {
 
-	public static ApplicationContext  context;
+	public static ConfigurableApplicationContext context;
 	public static void main(String[] args) {
 		 context= SpringApplication.run(DemoSbRestfulApplication.class, args);
 	}

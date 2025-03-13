@@ -2,28 +2,34 @@ package com.bootcamp.bc_forum.dto;
 
 import java.util.List;
 import com.bootcamp.bc_forum.model.dto.CommentDto;
+import com.bootcamp.bc_forum.model.dto.UserDto.Address.Geo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Builder
 @AllArgsConstructor
+@Setter
 public class UserDTO {
   private Long id;
   private String name;
   private String username;
   private String email;
-  private Address address;
+  private AddressDTO address;
   private String phone;
   private String website;
-  private Company company;
-  private List<Post> post;
+  private CompanyDTO company;
+   @JsonProperty(value = "posts")
+  private List<PostDTO> post;
 
 
   @Getter
   @AllArgsConstructor
-  public static class Address {
+  @Builder
+  public static class AddressDTO {
     private String street;
     private String suite;
     private String city;
@@ -33,7 +39,8 @@ public class UserDTO {
 
     @Getter
     @AllArgsConstructor
-    public static class Geo {
+    @Builder
+    public static class GeoDTO {
       private Double lat;
       private Double lng;
     }
@@ -42,7 +49,8 @@ public class UserDTO {
 
   @Getter
   @AllArgsConstructor
-  public static class Company {
+  @Builder
+  public static class CompanyDTO {
     private String name;
     private String catchPhrase;
     private String bs;
@@ -50,14 +58,20 @@ public class UserDTO {
 
   @Getter
   @AllArgsConstructor
-  public static class Post {
+  @Builder
+  @Setter
+  public static class PostDTO {
     private Long id;
     private String title ;
     private String body;
+    @JsonProperty(value = "comments")
     private List<CommentDto> comment;
 
     @Getter
-    public static class Comment {
+    @Builder
+    @Setter
+    @AllArgsConstructor
+    public static class CommentDTO {
     private Long id;
     private String name ;
     private String email;

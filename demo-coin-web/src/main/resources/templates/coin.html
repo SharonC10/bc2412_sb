@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Coin Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #444;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #444;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .positive {
+            color: green;
+        }
+
+        .negative {
+            color: red;
+        }
+
+        img {
+            height: 50px;
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Coin Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Current Price (USD)</th>
+                <th>Market Cap Change (24h)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="coin : ${coinList}">
+                <td th:text="${coin.name}"></td>
+                <td><img th:src="${coin.image}" alt="Coin Image"></td>
+                <td th:text="${coin.currentPrice}"></td>
+                <td th:class="${coin.marketCapChangePercentage24h > 0} ? 'positive' : 'negative'" 
+                    th:text="${coin.marketCapChangePercentage24h} + '%'"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

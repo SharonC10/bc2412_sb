@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller // @GetMapping
 @ResponseBody // JSON
 public class HelloworldController {
+  
   // An API for Getting Resource 
-  @GetMapping (value = "/greeting") //unique
+  @GetMapping (value = "/iphone/greeting") //unique
   // usaully none ,it is API should be unique
   public String hello(){
     return "Hello World!";

@@ -1,0 +1,7 @@
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* add bg image */
+  background-image: url('~@/components/images/background.jpg');
+  background-size: auto;
+}
