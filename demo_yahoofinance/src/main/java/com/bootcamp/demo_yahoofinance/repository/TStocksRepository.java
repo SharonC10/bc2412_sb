@@ -12,5 +12,6 @@ public interface TStocksRepository extends JpaRepository<TStocksEntity, Long>{
   public Optional<TStocksEntity> findBySymbol(String symbol);
   public List<TStocksEntity> findAll();
   public boolean existsBySymbol(String symol);
+  
 
 }

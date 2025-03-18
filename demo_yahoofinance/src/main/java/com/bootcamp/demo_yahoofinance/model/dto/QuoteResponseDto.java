@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
@@ -28,6 +29,7 @@ public class QuoteResponseDto {
     @NoArgsConstructor
     @Builder
     @ToString
+    @Setter
     public static class Result {
         private String language;
         private String region;
@@ -115,6 +117,7 @@ public class QuoteResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    @Setter
     public static class CorporateActions {
         private String headers;
         private String message;
@@ -124,11 +127,14 @@ public class QuoteResponseDto {
         @AllArgsConstructor
         @NoArgsConstructor
         @Builder
+        @Setter
         public static class Meta {
             private String eventType;
             private String dateEpochMs;
             private Double amount;
         }
     }
+
+    
 }
 

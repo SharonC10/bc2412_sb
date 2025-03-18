@@ -1,8 +1,10 @@
 package com.bootcamp.demo_yahoofinance.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.client.RestTemplate;
 import com.bootcamp.demo_yahoofinance.lib.RedisManager;
 import com.bootcamp.demo_yahoofinance.lib.YahooFinanceManager;
@@ -29,4 +31,10 @@ public class AppConfig {
     ObjectMapper objectMapper(){
         return new ObjectMapper();
     }
+
+    @Bean
+    ModelMapper modelMapper(){
+        return new ModelMapper(); 
+    }
+    
 }

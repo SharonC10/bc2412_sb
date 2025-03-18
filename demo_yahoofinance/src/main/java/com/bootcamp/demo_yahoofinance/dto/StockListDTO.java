@@ -1,5 +1,6 @@
 package com.bootcamp.demo_yahoofinance.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class DataDTO {
-  private String symbol;
-  private Long regularMarketTime;
-  private Double regularMarketPrice;
-  private Double regularMarketChangePercent;
-  private Double bid;
-  private Double ask;
+
+public class StockListDTO {
+  private String stockSymbol;
+
 }

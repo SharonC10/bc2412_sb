@@ -24,22 +24,13 @@ public class YahooFinanceManager {
         "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + symbol
             + ".HK&crumb=" + crumbManager.getData();
     System.out.println("url=" + dataUrl);
-    // -------------------------------------------
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.set("User-Agent", "Mozilla/5.0");
-    // headers.set("Cookie", crumbManager.ge);
-
-    // HttpEntity<String> entity = new HttpEntity<>(headers);
+    
     HttpEntity<String> entity = this.crumbManager.getHttpEntity();
 
     ResponseEntity<QuoteResponseDto> finalResponse = restTemplate
         .exchange(dataUrl, HttpMethod.GET, entity, QuoteResponseDto.class);
     return finalResponse.getBody();
 
-    // ------------------------------
-    // QuoteResponseDto finalResponse =
-    // restTemplate.getForObject(dataUrl, QuoteResponseDto.class);
-    // return finalResponse;
   }
 
 

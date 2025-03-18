@@ -1,6 +1,7 @@
 package com.bootcamp.demo_yahoofinance.lib;
 
 import java.time.Duration;
+import java.util.Set;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -24,6 +25,10 @@ public class RedisManager {
 
   public <T> T get(String key, Class<T> clazz) throws JsonProcessingException{
     String json = this.redisTemplate.opsForValue().get(key);//get String ->json
+    if (json == null){
+      return null;
+    }
+    
     return objectMapper.readValue(json, clazz); //become json
   }
 
@@ -32,4 +37,12 @@ public class RedisManager {
     String serializedJson = objectMapper.writeValueAsString(object); //json -> Object (String)
     this.redisTemplate.opsForValue().set(key, serializedJson,duration); //json-> String and save for 1hours
   }
+
+  public void clearAll(){
+    Set <String> keys = redisTemplate.keys("PRICE-LIST:*");
+    if (keys != null && !keys.isEmpty()){
+      redisTemplate.delete(keys);
+    } 
+  }
+  
 }
