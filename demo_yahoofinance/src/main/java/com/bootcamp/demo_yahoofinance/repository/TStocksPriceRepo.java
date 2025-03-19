@@ -15,14 +15,12 @@ public interface TStocksPriceRepo extends JpaRepository<TStockPriceEntity,Long>{
   public List<TStockPriceEntity> findAll();
   public Optional<TStockPriceEntity> findBySymbol(String symbol);
 
-  @Query ("SELECT t FROM TStockPriceEntity t " + 
-  "WHERE t.regularMarketTime < :yesterdayEnd " +
-  "ORDER BY t.regularMarketTime DESC")
-  TStockPriceEntity findLastDataForPreviousDay (@Param ("yesterdatEnd")
-  ZonedDateTime yesterdayEnd);
+  @Query("SELECT t FROM TStockPriceEntity t WHERE t.symbol = :symbol AND t.apiTimeStamp >= :startTime ORDER BY t.apiTimeStamp")
+    List<TStockPriceEntity> findOpeningData(@Param("symbol") String symbol, @Param("startTime") ZonedDateTime startTime);
 
+    @Query("SELECT t FROM TStockPriceEntity t WHERE t.symbol = :symbol ORDER BY t.apiTimeStamp DESC")
+    List<TStockPriceEntity> findLiveData(@Param("symbol") String symbol);
 
-  
-
-
+    @Query("SELECT t FROM TStockPriceEntity t WHERE t.symbol = :symbol AND t.apiTimeStamp <= :dateTime ORDER BY t.apiTimeStamp DESC")
+    List<TStockPriceEntity> findByDateTime(@Param("symbol") String symbol, @Param("dateTime") ZonedDateTime dateTime);
 }

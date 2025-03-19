@@ -1,4 +1,4 @@
-package com.bootcamp.demo_yahoofinance.config;
+ package com.bootcamp.demo_yahoofinance.config;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,52 +23,39 @@ import com.bootcamp.demo_yahoofinance.service.imp.YHFinanceService;
 @Component
 public class ScheduleConfig {
 
-  private final RedisManager redisManager;
+  @Autowired
+  private RedisManager redisManager;
+  @Autowired
   private YahooFinanceManager yahooFinanceManager;
+  @Autowired
   private YHFinanceService yhFinanceService;
   @Autowired
   private TStocksPriceRepo tStocksPriceRepo;
 
-
-    ScheduleConfig(RedisManager redisManager) {
-        this.redisManager = redisManager;
-    }
-
-  @Scheduled(fixedDelay = 30000) // 每 5 分鐘執行--------------------------------
+  @Scheduled(fixedDelay = 300000) // 每 5 分鐘執行--------------------------------
   public void quoteData() throws Exception {
 
-    // 0800 ---> yesterday record-------------------------------
-    // ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Hong Kong"));
-    // LocalTime currentTime = now.toLocalTime();
-    // if (currentTime.isBefore(LocalTime.of(8, 0))){
-    //   TStockPriceEntity lastData = yhFinanceService.findLastDataForPreviousDay();
-    //   if (lastData != null){
-    //     // ! what is last Data???? 
-    //     redisManager.set("PRICE-LIST", lastData.getSymbol(), Duration.ofHours(24));
-    //   }
-    // }
-    // //0800 - 0930 redis clear data-------------------------------
-    // else if (currentTime.isAfter(LocalTime.of(8, 0))&& 
-    // currentTime.isBefore(LocalTime.of(9, 30))) {
-    //   redisManager.clearAll();
-    // }
-
-    // // 0935 save data ---> DB and redis-------------------------------
-    // else if (currentTime.isAfter(LocalTime.of(9, 35))){
-    //   List<TStockPriceEntity> stockPriceList = yhFinanceService.getPriceCache();//get from redis (if null -> get from DB)
-
-    // quote data(388 price ) ---> base on redis no.-------------------------------
-    List<TStocksEntity> stockList = yhFinanceService.getStockListWithCache();
+    try{
+    List<TStocksEntity> stockList = 
+    yhFinanceService.getStockListWithCache();
     List<DataDTO> dataList = new ArrayList<>();
     
     for (TStocksEntity stock : stockList) {
       String symbol = stock.getSymbol();
-      QuoteResponseDto quoteResponse = yahooFinanceManager // call api
-          .quote(symbol);
+      //!
+      String formattedSymbol = symbol.replace(".HK", "");
 
+      QuoteResponseDto quoteResponse = yahooFinanceManager // call api
+          .quote(formattedSymbol);
+
+          if (quoteResponse.getQuoteResponse().getResult().isEmpty()){ 
+            System.out.println("No data found for symbol: "+ symbol);
+            continue;
+          }
+        
       // Dto --> DTO------------------------------------------------------------
       DataDTO dataDTO = new DataDTO();
-      dataDTO.setSymbol(symbol);
+      dataDTO.setSymbol(quoteResponse.getQuoteResponse().getResult().get(0).getSymbol());
       dataDTO.setRegularMarketTime(quoteResponse.getQuoteResponse().getResult()
           .get(0).getRegularMarketTime());
       dataDTO.setRegularMarketPrice(quoteResponse.getQuoteResponse().getResult()
@@ -82,41 +69,84 @@ public class ScheduleConfig {
 
       dataList.add(dataDTO);
 
+      System.out.println(dataDTO.getRegularMarketTime());
+
+      // save in database 
+ TStockPriceEntity priceEntity = TStockPriceEntity.builder()
+ .symbol(dataDTO.getSymbol())
+ .ask(dataDTO.getAsk())
+ .bid(dataDTO.getBid())
+ .regularMarketTime(Instant.ofEpochMilli(dataDTO.getRegularMarketTime()*1000).atZone(ZoneId.of("Asia/Hong_Kong")))
+ .regularMarketChangePercent(dataDTO.getRegularMarketChangePercent())
+ .regularMarketPrice(dataDTO.getRegularMarketPrice())
+ .type("5 mins")
+ .apiTimeStamp(ZonedDateTime.now(ZoneId.of("Asia/Hong_Kong")))
+ .build();
+ 
+
+ System.out.println(priceEntity.getRegularMarketTime());
+
+
+  //save in Redis
+ tStocksPriceRepo.save(priceEntity);
+        }}catch (Exception e){ 
+          System.out.println("Error occurred while fetching stock data " + e.getMessage());
+          e.printStackTrace();
+        }
+
+
+
+
+
+
+
+
+
+        
+      }
+    }
+  
       // time stamp (json)----> Unix time ---------------------
-      long regularMarketUnixTime = dataDTO.getRegularMarketTime(); // get json timeStamp
-      ZonedDateTime regularMarketDatTime =
-          Instant.ofEpochMilli(regularMarketUnixTime)
-              .atZone(ZoneId.of("Asia/Hong Kong"));
+    //   long regularMarketUnixTime = dataDTO.getRegularMarketTime(); // get json timeStamp
+    //   ZonedDateTime regularMarketDatTime =
+    //       Instant.ofEpochMilli(regularMarketUnixTime)
+    //           .atZone(ZoneId.of("Asia/Hong Kong"));
 
 
-      // Type ---> 5min------------------------------------------------------------
-      String type = "5 mins";
+    //   // Type ---> 5min------------------------------------------------------------
+    //   String type = "5 mins";
 
 
-      // Currnet Time Stamp------------------------------------------------------------
-      Instant currentTimeStamp = Instant.now();
-      long currentTimeMillis = currentTimeStamp.toEpochMilli();
-      ZonedDateTime currZonedDateTime =
-          ZonedDateTime.now(ZoneId.of("Asia/Hong Kong"));
+    //   // Currnet Time Stamp------------------------------------------------------------
+    //   ZonedDateTime currZonedDateTime =
+    //       ZonedDateTime.now(ZoneId.of("Asia/Hong Kong"));
 
 
+    //   // set DTO ----> Entity & save------------------------------------------------------------
+    //   TStockPriceEntity priceEntity = TStockPriceEntity.builder()
+    //       .symbol(dataDTO.getSymbol())
+    //       .ask(dataDTO.getAsk())
+    //       .bid(dataDTO.getBid())
+    //       .regularMarketTime(regularMarketDatTime)
+    //       .regularMarketChangePercent(dataDTO.getRegularMarketChangePercent())
+    //       .regularMarketPrice(dataDTO.getRegularMarketPrice()).type(type)
+    //       .apiTimeStamp(currZonedDateTime)
+    //       .build();
 
-      // set DTO ----> Entity & save------------------------------------------------------------
-      TStockPriceEntity priceEntity = TStockPriceEntity.builder()
-          .symbol(dataDTO.getSymbol()).ask(dataDTO.getAsk())
-          .bid(dataDTO.getBid()).regularMarketTime(regularMarketDatTime)
-          .regularMarketChangePercent(dataDTO.getRegularMarketChangePercent())
-          .regularMarketPrice(dataDTO.getRegularMarketPrice()).type(type)
-          .apiTimeStamp(currZonedDateTime).build();
-
-      tStocksPriceRepo.save(priceEntity);
-    }
+    //   tStocksPriceRepo.save(priceEntity);
+    // }
+    
       // ----save in redis------------------------------------------------------------
-      List<TStockPriceEntity> priceLists = yhFinanceService.getPriceCache();
-    }
-
+    //   List<TStockPriceEntity> priceLists = 
+    //   yhFinanceService.getPriceCache();
+    // }catch(Exception e){ 
+    //   System.out.println("Error occurred while fetching stock data " + e.getMessage());
+    //   e.printStackTrace();
+    
+    
+    
+   
+ 
 
    
-  }
-
-
+  
