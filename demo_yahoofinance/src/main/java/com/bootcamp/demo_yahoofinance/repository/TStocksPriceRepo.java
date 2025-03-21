@@ -13,7 +13,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 public interface TStocksPriceRepo extends JpaRepository<TStockPriceEntity,Long>{
 
   public List<TStockPriceEntity> findAll();
-  public Optional<TStockPriceEntity> findBySymbol(String symbol);
+  public TStockPriceEntity findBySymbol(String symbol);
 
   @Query("SELECT t FROM TStockPriceEntity t WHERE t.symbol = :symbol AND t.apiTimeStamp >= :startTime ORDER BY t.apiTimeStamp")
     List<TStockPriceEntity> findOpeningData(@Param("symbol") String symbol, @Param("startTime") ZonedDateTime startTime);
@@ -23,4 +23,6 @@ public interface TStocksPriceRepo extends JpaRepository<TStockPriceEntity,Long>{
 
     @Query("SELECT t FROM TStockPriceEntity t WHERE t.symbol = :symbol AND t.apiTimeStamp <= :dateTime ORDER BY t.apiTimeStamp DESC")
     List<TStockPriceEntity> findByDateTime(@Param("symbol") String symbol, @Param("dateTime") ZonedDateTime dateTime);
+
+
 }

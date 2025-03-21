@@ -1,10 +1,13 @@
 package com.bootcamp.demo_yahoofinance.service.imp;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,7 +62,7 @@ public class YHFinanceService {
     TStockPriceEntity[] redisPrceList =
         this.redisManager.get("PRICE-LIST", TStockPriceEntity[].class);
     if (redisPrceList != null) {
-      return Arrays.asList(redisPrceList);// return directly
+      return new ArrayList<>(Arrays.asList(redisPrceList));// return directly
     }
     List<TStockPriceEntity> quotePriceLists = getPriceInDB();
     this.redisManager.set("PRICE-LIST", quotePriceLists, Duration.ofHours(24));
@@ -72,18 +75,43 @@ public class YHFinanceService {
 
     return stockPriceDB;
   }
+
+
+
+
+
+
+
+
+
+  //
 //----------------------------------------------------------
-public List<TStockPriceEntity> getLastDataFromCacheOrDB(String symbol, ZonedDateTime yesterdayEnd)
-throws JsonProcessingException {
-  // 先從 Redis 獲取數據
-  List<TStockPriceEntity> priceData = redisManager.getLastPriceData(symbol, yesterdayEnd);
-  if (priceData.isEmpty()) {
-      // 如果 Redis 中沒有數據，則從數據庫獲取
-      return getPriceFromDB(symbol, yesterdayEnd);
+// public List<TStockPriceEntity> getLastDataFromCacheOrDB(String symbol, ZonedDateTime yesterdayEnd)
+// throws JsonProcessingException {
+//   // 先從 Redis 獲取數據
+//   List<TStockPriceEntity> priceData = redisManager.getLastPriceData(symbol, yesterdayEnd);
+//   if (priceData.isEmpty()) {
+//       // 如果 Redis 中沒有數據，則從數據庫獲取
+//       return getPriceFromDB(symbol, yesterdayEnd);
+//   }
+//   return priceData; // 返回從 Redis 獲取的數據
+// }
+public TStockPriceEntity getLatestStockPrice(String symbol) throws IOException {
+  // 從 Redis 獲取所有價格數據
+  List<TStockPriceEntity> priceList = redisManager.getPriceCache();
+  
+  if (priceList != null) {
+      // 選擇與給定 symbol 匹配的最新價格數據
+      return priceList.stream()
+          .filter(priceEntity -> priceEntity.getSymbol().equals(symbol)) // 根據 symbol 過濾
+          .max(Comparator.comparing(TStockPriceEntity::getRegularMarketTime)) // 根據時間戳選擇最新的
+          .orElse(null); // 如果沒有找到，返回 null
   }
-  return priceData; // 返回從 Redis 獲取的數據
+  
+  return null; // 如果 priceList 為 null，返回 null
 }
 
+//
 
 
  public List<TStockPriceEntity> getPriceFromDB(String symbol, ZonedDateTime dateTime) {
@@ -119,6 +147,33 @@ public List<TStockPriceEntity> getOpeningData(String symbol, ZonedDateTime start
   return tStocksPriceRepo.findLiveData(symbol);
  }
 
+
+ public TStockPriceEntity getStockPrice(String symbol) throws JsonProcessingException {
+  try {
+      // 首先從 Redis 獲取數據
+      TStockPriceEntity priceEntity = redisManager.getPriceBySymbol(symbol);
+      if (priceEntity != null) {
+          return priceEntity; // 找到則返回
+      }
+
+      // 如果 Redis 中沒有，則從數據庫查詢
+      priceEntity = tStocksPriceRepo.findBySymbol(symbol);
+      if (priceEntity != null) {
+          // 將從數據庫獲取的數據添加到 Redis 中
+          List<TStockPriceEntity> priceList = redisManager.getPriceCache();
+          if (priceList == null) {
+              priceList = new ArrayList<>(); // 如果 Redis 中沒有價格列表，則創建一個新的列表
+          }
+          priceList.add(priceEntity); // 添加新價格實體
+          redisManager.setPriceList(priceList); // 更新 Redis 中的價格列表
+      }
+
+      return priceEntity; // 返回查詢到的價格實體
+  } catch (Exception e) {
+      e.printStackTrace(); // 記錄異常
+      return null; // 返回 null
+  }
+}
 
 
 

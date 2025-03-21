@@ -28,4 +28,3 @@ public class EntityMapper {
             .build();
     }
 }
-

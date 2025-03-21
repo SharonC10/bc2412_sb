@@ -70,7 +70,12 @@
       <artifactId>modelmapper</artifactId>
       <version>3.2.0</version>
     </dependency>
-		
+		<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>2.14.0</version> <!-- 根據您使用的版本選擇 -->
+</dependency>
+
 
 
 	</dependencies>

@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import com.bootcamp.demo_yahoofinance.lib.RedisManager;
 import com.bootcamp.demo_yahoofinance.lib.YahooFinanceManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class AppConfig {
@@ -27,9 +28,15 @@ public class AppConfig {
         return new RedisManager(factory, objectMapper);
     }
 
-    @Bean
-    ObjectMapper objectMapper(){
-        return new ObjectMapper();
+    // @Bean
+    // ObjectMapper objectMapper(){
+    //     return new ObjectMapper();
+    // }
+     @Bean
+   ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); // 註冊 JavaTimeModule
+        return objectMapper;
     }
 
     @Bean
