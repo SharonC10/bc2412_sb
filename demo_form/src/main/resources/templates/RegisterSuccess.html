@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Success</title>
+    <style type="text/css">
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000; /* 黑色背景 */
+            color: #f0f0f0; /* 淺灰色文字 */
+            margin: 0;
+            padding: 0;
+            background-image: url('—Pngtree—wave pattern_5415946.png'); /* 浮世繪波浪圖案 */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: bottom; /* 圖片位置 */
+        }
+        .container {
+            width: 400px;
+            height: 600px;
+            margin: 50px auto;
+            background: rgba(34, 34, 34, 0.8); /* 深灰色，帶透明度 */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1; /* 確保容器在背景之上 */
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff; /* 白色標題 */
+            margin-bottom: 20px;
+        }
+        span {
+            display: inline-block;
+            width: 100;
+
+            margin: 10px 0;
+            color: #ddd; /* 淺灰色文本 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Registration Success!</h1>
+        <div align="center">
+        <a>Please remember the User Name and Password.</a><br/>
+        <br/>
+        </div>
+
+        <span>User Name: </span> <span th:text="${user.userName}"></span><br/>
+        <span>Password: </span> <span th:text="${user.password}"></span><br/>
+        <span>Email: </span> <span th:text="${user.email}"></span><br/>
+        <span>Phone Number: </span><span th:text="${user.phoneNumber}"></span><br/>
+        <span>Birthday: </span><span th:text="${#dates.format(user.birthday,'yyyy-MM-dd')}"></span><br/>
+        <span>Gender: </span><span th:text="${user.gender}"></span><br/>
+        <span>Married State: </span><span th:text="${user.marriedState}"></span><br/>
+    </div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+    <style type="text/css">
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000; /* 黑色背景 */
+            color: #f0f0f0; /* 淺灰色文字 */
+            margin: 0;
+            padding: 0;
+            background-image: url('—Pngtree—wave pattern_5415946.png'); /* 浮世繪波浪圖案 */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: bottom; /* 圖片位置 */
+        }
+        .container {
+            width: 400px;
+            margin: 50px auto;
+            background: rgba(34, 34, 34, 0.8); /* 深灰色，帶透明度 */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1; /* 確保容器在背景之上 */
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff; /* 白色標題 */
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #ddd; /* 淺灰色標籤 */
+        }
+        input[type=text], input[type=password], select {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: 1px solid #555; /* 深灰色邊框 */
+            border-radius: 6px;
+            margin-bottom: 15px;
+            background: #444; /* 更深的輸入框背景 */
+            color: #fff; /* 輸入框文字顏色 */
+        }
+        button {
+            width: 100%;
+            background-color: #007bff; /* 藍色按鈕 */
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3; /* 懸停效果 */
+        }
+        .checkbox-label {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Registration</h1>
+        <form action="#" th:action="@{/register}" th:object="${user}" method="post">
+            <label>User Name:</label>
+            <input type="text" th:field="*{userName}" required  />
+            <label>Password:</label>
+            <input type="password" th:field="*{password}" id="password" required />
+            <label>Email:</label>
+            <input type="text" th:field="*{email}" required/>
+            <label>Phone Number:</label>
+            <input type="text" th:field="*{phoneNumber}" required/>
+           
+            <label for="birthday">Birthday (yyyy-mm-dd):</label>
+            <input type="date" id="birthday" th:field="*{birthday}" required />
+            
+            <label>Gender:</label>
+            <select th:field="*{gender}" required>
+                <option th:each="g : ${genderList}" th:value="${g}" th:text="${g}"></option>
+            </select>
+            <label class="checkbox-label">Married State:</label>
+            <input type="checkbox" th:field="*{marriedState}" /><br/>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
